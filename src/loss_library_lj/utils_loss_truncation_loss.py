@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from typing import List
 from utils import compute_entity_mask
 
-def loss_truncation(
+def loss_truncation_loss(
         logits: torch.tensor, 
         labels: torch.tensor, 
         model, 
