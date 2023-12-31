@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling","torch"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
@@ -15,6 +15,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+  "numpy",
+  "torch",
+  "spacy",
+  "scispacy",
+  "pickle"
 ]
 
 [project.urls]
