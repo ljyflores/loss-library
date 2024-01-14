@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 
 from typing import List
-from utils import compute_entity_mask
+from loss_library.utils_misc import compute_entity_mask
 
 def compute_rejection_loss(
     logits: torch.tensor,

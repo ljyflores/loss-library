@@ -1,5 +1,0 @@
-ipykernel
-numpy
-torch
-scispacy
-spacy

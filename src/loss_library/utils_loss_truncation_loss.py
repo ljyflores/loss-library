@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from typing import List
-from utils import compute_entity_mask
+from loss_library.utils_misc import compute_entity_mask
 
 class LossDropper(nn.Module):
     def __init__(

@@ -2,11 +2,11 @@ import spacy
 import scispacy
 import pickle
 
-from scispacy.linking import EntityLinker
-from utils_loss_truncation_loss import loss_truncation_loss, LossDropper
-from utils_mutual_info_loss import mutual_information_loss
-from utils_rejection_loss import rejection_loss
-from utils_unlikelihood_loss import unlikelihood_loss
+# from scispacy.linking import EntityLinker
+from loss_library.utils_loss_truncation_loss import loss_truncation_loss, LossDropper
+from loss_library.utils_mutual_info_loss import mutual_information_loss
+from loss_library.utils_rejection_loss import rejection_loss
+from loss_library.utils_unlikelihood_loss import unlikelihood_loss
 
 class LossLibrary:
     def __init__(
@@ -43,11 +43,11 @@ class LossLibrary:
             # Import NER models and linkers
             ner_model_web = spacy.load("en_core_web_lg")
             ner_model_sci = spacy.load("en_core_sci_lg")
-            ner_model_sci.add_pipe(
-                "scispacy_linker",
-                config={"resolve_abbreviations": True, "linker_name": "umls"},
-            )
-            linker_sci = ner_model_sci.get_pipe("scispacy_linker")
+            # ner_model_sci.add_pipe(
+            #     "scispacy_linker",
+            #     config={"resolve_abbreviations": True, "linker_name": "umls"},
+            # )
+            # linker_sci = ner_model_sci.get_pipe("scispacy_linker")
 
             # Specify which entities to use for hallucination checking
             self.ul_check_input_ents = ul_check_input_ents
@@ -55,7 +55,7 @@ class LossLibrary:
 
             # Add the NER models and linkers to the clsass
             self.ner_model = [ner_model_sci, ner_model_web]
-            self.linker    = [linker_sci, None]
+            self.linker    = [None, None] # [linker_sci, None]
 
         if loss_type == "rej":
             # Import NER models and linkers
@@ -66,15 +66,15 @@ class LossLibrary:
             # Import NER models and linkers
             ner_model_web = spacy.load("en_core_web_lg")
             ner_model_sci = spacy.load("en_core_sci_lg")
-            ner_model_sci.add_pipe(
-                "scispacy_linker",
-                config={"resolve_abbreviations": True, "linker_name": "umls"},
-            )
-            linker_sci = ner_model_sci.get_pipe("scispacy_linker")
+            # ner_model_sci.add_pipe(
+            #     "scispacy_linker",
+            #     config={"resolve_abbreviations": True, "linker_name": "umls"},
+            # )
+            # linker_sci = ner_model_sci.get_pipe("scispacy_linker")
 
             # Add them to the class
             self.ner_model = [ner_model_sci, ner_model_web]
-            self.linker    = [linker_sci, None]
+            self.linker    = [None, None] # [linker_sci, None]
 
         if loss_type in ["lt","max_lt","mi_lt"]:
             self.loss_dropper = LossDropper(
