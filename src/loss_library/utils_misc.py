@@ -96,11 +96,18 @@ def compute_entity_mask(targets, tokenizer, ner_model, linker):
     for lst in entity_strs:
         if len(lst)>0:
             # Get the entities and tokenize them to get their IDs
-            ent_toks = tokenizer(lst)
+            entity_token_ids = tokenizer(lst)
+            
+            # This returns a list of lists containing the input IDs for each token
+            # Let's flatten it to get one long list
+            full_entity_token_ids = [item for lst in entity_token_ids["input_ids"] for item in lst]
+            full_entity_token_ids = list(set(full_entity_token_ids))
+            
             # One hot encode to a vocab_size length vector, where it's 1 if the 
             # vocab word is present and is an entity
             sent_ent_mask = torch.zeros(tokenizer.vocab_size)
-            sent_ent_mask[ent_toks] = 1.0
+            sent_ent_mask[full_entity_token_ids] = 1.0
+            
             # Save the vector
             entity_mask_lst.append(sent_ent_mask)
         else:

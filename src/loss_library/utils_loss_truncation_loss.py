@@ -148,6 +148,6 @@ def loss_truncation_loss(
 
     # Apply loss truncation: Find examples with a bad (i.e. high) score and mask them out
     mask = loss_dropper(score)
-    loss = loss * mask  # Mask out the high losses
+    loss = nll_loss * mask  # Mask out the high losses
     loss = loss.mean()  # Aggregate
     return loss
