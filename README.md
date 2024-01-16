@@ -2,13 +2,14 @@
 <b>Loss Library</b> consolidates loss functions from various research papers, allowing users to easily integrate different training losses! We invite contributions to the package by adding loss functions.
 
 ## Supported Losses
-| Loss Function | Keyword | Arguments | Citation |
-| ------------- | ------- | --------- | -------- |
-| Unlikelihood Loss            | `ul`     | | (<a href="https://arxiv.org/abs/1908.04319">Welleck et al., 2019</a>) |
-| Rejection Loss               | `rej`    | | (<a href="https://aclanthology.org/2022.emnlp-main.663.pdf">Cao et al., 2022</a>) |
-| Mutual Information           | `mi`     | | Inspired by (<a href="https://arxiv.org/abs/2210.13210">Van der Poel et al., 2022</a>) |
-| Loss Truncation              | `lt`     | | (<a href="https://aclanthology.org/2020.acl-main.66/">Kang and Hashimoto, 2020</a>) |
-| Entity-Level Loss Truncation | `max_lt` | | Inspired by (<a href="https://aclanthology.org/2020.acl-main.66/">Kang and Hashimoto, 2020</a>) |
+| Loss Function | Description / Intuition | Citation |
+| ------------- | ------- | --------- | 
+| Unlikelihood Loss            | Penalize unwanted tokens, based on user-provided weights | (<a href="https://arxiv.org/abs/1908.04319">Welleck et al., 2019</a>) |
+| Rejection Loss               | Penalize model for uncertainty, letting it add probability on `<UNK>` token, and reduce probability from unsure tokens | (<a href="https://aclanthology.org/2022.emnlp-main.663.pdf">Cao et al., 2022</a>) |
+| Mutual Information           | Penalize model for uncertainty, by maximizing the entropy between the predicted and baseline prediction | Inspired by (<a href="https://arxiv.org/abs/2210.13210">Van der Poel et al., 2022</a>) |
+| Loss Truncation              | Remove noisy examples, based on the heuristic that noisy examples have higher cross-entropy loss | (<a href="https://aclanthology.org/2020.acl-main.66/">Kang and Hashimoto, 2020</a>) |
+| Mutual-Info Based Loss Truncation | Remove noisy examples, where noisy examples have very different predictions between baseline and predicted | Inspired by (<a href="https://aclanthology.org/2020.acl-main.66/">Kang and Hashimoto, 2020</a>) |
+| Entity-Level Loss Truncation | Remove noisy examples, where we use the cross-entropy loss of <i>only</i> the entity tokens | Inspired by (<a href="https://aclanthology.org/2020.acl-main.66/">Kang and Hashimoto, 2020</a>) |
 
 # Set-Up
 <b>Loss Library</b> currently supports Python 3.8, and can be loaded in as follows:
