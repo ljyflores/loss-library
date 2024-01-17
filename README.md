@@ -112,9 +112,7 @@ def model_init_func(trial):
     return model
 
 # Initialize the tokenizer
-tokenizer = AutoTokenizer.from_pretrained(
-        model_name_dict[args.model][1] if args.checkpoint is None else args.checkpoint
-    )
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-xsum")
 
 # Set up Trainer
 training_args = Seq2SeqTrainingArguments(...)
