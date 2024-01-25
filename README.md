@@ -1,5 +1,7 @@
 # Overview
-<b>Loss Library</b> consolidates loss functions from various research papers, allowing users to easily integrate different training losses! We invite contributions to the package by adding loss functions.
+<b>Loss Library</b> aims to help users plug-and-play loss functions from various NLP papers. We invite contributions to the package by adding loss functions!
+
+
 
 ## Supported Losses
 | Loss Function | Description / Intuition | Citation |
