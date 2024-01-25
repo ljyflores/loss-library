@@ -1,1 +1,1 @@
-from loss_library.utils import LossLibrary
+from loss_library.loss_library import LossLibrary

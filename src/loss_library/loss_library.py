@@ -25,7 +25,24 @@ class LossLibrary:
             mi_weight = 1.0,
             mi_filter = "all"
         ):
+        """Instantiate a loss function with the corresponding parameters.
 
+        Args:
+            loss_type (str): Loss type to use, either "ul", "rej", "mi", "lt", "max_lt"
+            tokenizer (transformers.AutoTokenizer): HuggingFace tokenizer
+            model (transformers.AutoModel): HuggingFace model
+            ul_weights_path (str, optional): Path to a pkl file, which contains a list of float values which correspond to the penalties to apply to each vocab token. Defaults to None.
+            ul_lambda_read (float, optional): Weight on the readability penalty (which is added to NLL loss). Defaults to 5e-4.
+            ul_lambda_const (float, optional): Weight on the consistency penalty (which is added to NLL loss). Defaults to 1.5e-4.
+            ul_check_input_ents (bool, optional): Whether or not to penalize generated entities that are unsupported by the input. Defaults to True.
+            ul_check_label_ents (bool, optional): Whether or not to penalize generated entities that are unsupported by the label. Defaults to True.
+            lt_dropc (float, optional): The percent of training examples to drop from training. Defaults to 0.4.
+            lt_min_count (int, optional): The number of examples trained on before the cutoff is computed. Defaults to 500.
+            lt_recompute (int, optional): The number of training steps taken before the loss cutoff is recomputed. Defaults to 500.
+            mi_weight (float, optional): Weight on the mutual information penalty (which is added to NLL loss). Defaults to 1.0.
+            mi_filter (str, optional): Which tokens' entities to maximize mutual information for, either "generated" for the tokens which the model would generate (i.e. have the highest probabilities at time of generation), "labels" for the tokens in the label, "both" for the generated and label tokens, or "all" for all tokens. Defaults to "all".
+        """
+        
         self.loss_type = loss_type 
         self.tokenizer = tokenizer
         self.model     = model
@@ -43,11 +60,6 @@ class LossLibrary:
             # Import NER models and linkers
             ner_model_web = spacy.load("en_core_web_lg")
             ner_model_sci = spacy.load("en_core_sci_lg")
-            # ner_model_sci.add_pipe(
-            #     "scispacy_linker",
-            #     config={"resolve_abbreviations": True, "linker_name": "umls"},
-            # )
-            # linker_sci = ner_model_sci.get_pipe("scispacy_linker")
 
             # Specify which entities to use for hallucination checking
             self.ul_check_input_ents = ul_check_input_ents
@@ -66,15 +78,10 @@ class LossLibrary:
             # Import NER models and linkers
             ner_model_web = spacy.load("en_core_web_lg")
             ner_model_sci = spacy.load("en_core_sci_lg")
-            # ner_model_sci.add_pipe(
-            #     "scispacy_linker",
-            #     config={"resolve_abbreviations": True, "linker_name": "umls"},
-            # )
-            # linker_sci = ner_model_sci.get_pipe("scispacy_linker")
 
             # Add them to the class
             self.ner_model = [ner_model_sci, ner_model_web]
-            self.linker    = [None, None] # [linker_sci, None]
+            self.linker    = [None, None]
 
         if loss_type in ["lt","max_lt","mi_lt"]:
             self.loss_dropper = LossDropper(
