@@ -95,7 +95,7 @@ class LossLibrary:
             self.mi_weight = mi_weight
             self.filter = mi_filter 
     
-    def forward(self, logits, labels, inputs=None):
+    def __call__(self, logits, labels, inputs=None):
         if self.loss_type == "rej":
             loss = rejection_loss(
                 logits = logits, 

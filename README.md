@@ -55,7 +55,7 @@ for idx, batch in enumerate(dataloader_train):
     logits = outputs.get("logits")
             
     # Compute loss
-    loss = loss_function.forward(
+    loss = loss_function(
               logits = logits, 
               labels = labels, 
               inputs = inputs
@@ -96,7 +96,7 @@ class SimplificationTrainer(Seq2SeqTrainer):
         labels = inputs["labels"].to(logits.device)
 
         # Compute the loss using LossLibrary, which is stored in self.loss_function
-        loss = self.loss_function.forward(
+        loss = self.loss_function(
             logits = logits, 
             labels = labels, 
             inputs = inputs
