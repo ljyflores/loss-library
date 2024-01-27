@@ -25,7 +25,7 @@ pip install .
 To use Loss Library, we instantiate `LossLibrary` using the desired loss function, and call it to compute the loss at each training step.
 
 ## Without `Trainer`
-```
+```python
 import loss_library
 
 # Instantiate loss function
@@ -71,7 +71,7 @@ When using `Trainer`, we add `LossLibrary` as an attribute of the Trainer.
 We use it to compute loss by subclassing `Trainer` and changing the `compute_loss` function.
 
 Step 1: Subclass `Trainer` and change the `compute_loss` function
-```
+```python
 class SimplificationTrainer(Seq2SeqTrainer):
 
     def compute_loss(self, model, inputs, return_outputs=False):
@@ -105,7 +105,7 @@ class SimplificationTrainer(Seq2SeqTrainer):
 ```
 
 Step 2: Add `LossLibrary` to the Trainer
-```
+```python
 import loss_library
 
 # Initialize the model (using the model_init_func)
