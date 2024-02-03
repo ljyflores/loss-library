@@ -74,7 +74,7 @@ class LossLibrary:
             self.ner_model = [spacy.load("en_core_web_lg")]
             self.linker    = [None]
 
-        if loss_type == "max_lt":
+        if loss_type in ["lt", "max_lt"]:
             # Import NER models and linkers
             ner_model_web = spacy.load("en_core_web_lg")
             ner_model_sci = spacy.load("en_core_sci_lg")
@@ -107,8 +107,9 @@ class LossLibrary:
 
         if self.loss_type == "ul":
             loss = unlikelihood_loss(
-                logits, 
-                inputs, 
+                logits = logits, 
+                inputs = inputs, 
+                labels = labels,
                 tokenizer = self.tokenizer, 
                 ner_model = self.ner_model, 
                 linker = self.linker, 

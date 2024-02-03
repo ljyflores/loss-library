@@ -91,11 +91,11 @@ def loss_truncation_loss(
     batch_size, seq_len, vocab_size = logits.shape
 
     # Loss truncation always uses the original negative log likelihood as loss
-    # So let's first compute that here
+    # So let's first compute that here, and save a tensor of batch_size x seq_len
     nll_loss = F.cross_entropy(
         logits.view(-1, vocab_size), 
         labels.view(-1), 
-        reduction='none').mean(axis=-1).view(-1, batch_size)
+        reduction='none').view(batch_size, seq_len)
     
     # All loss truncation is doing is removing examples from the training procedure
     # (i.e. by setting NLL to 0) according to some score. We now compute that score,
@@ -144,7 +144,10 @@ def loss_truncation_loss(
         
     # Otherwise, use the original NLL loss as the score
     else:
-        score = nll_loss
+        score = nll_loss.mean(axis=-1).view(-1, batch_size)
+
+    # Average the loss per example
+    nll_loss = nll_loss.mean(axis=-1).view(-1, batch_size)
 
     # Apply loss truncation: Find examples with a bad (i.e. high) score and mask them out
     mask = loss_dropper(score)

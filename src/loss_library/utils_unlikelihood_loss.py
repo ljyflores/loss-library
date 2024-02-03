@@ -44,6 +44,7 @@ def compute_unlikelihood_loss(
 def unlikelihood_loss(
         logits, 
         inputs, 
+        labels,
         tokenizer, 
         ner_model, 
         linker, 
@@ -62,6 +63,7 @@ def unlikelihood_loss(
     Args:
         logits (_type_): _description_
         inputs (_type_): _description_
+        labels (_type_): _description_
         tokenizer (_type_): _description_
         ner_model (_type_): _description_
         linker (_type_): _description_
