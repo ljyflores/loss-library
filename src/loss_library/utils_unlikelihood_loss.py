@@ -82,17 +82,20 @@ def unlikelihood_loss(
 
     batch_size, seq_len, vocab_size = logits.shape
 
-    # Compute cross entropy loss
-    labels = labels.to(logits.device)
+    # Change special tokens to padding tokens
+    labels[labels == -100] = tokenizer.pad_token_id
+    
+    # Compute NLL loss
+    labels.to(logits.device)
     nll_loss = F.cross_entropy(
         logits.view(-1, vocab_size), 
         labels.view(-1), 
-        reduction='none')
+        reduction='none').view(batch_size, seq_len).mean(axis=-1)
 
     # Generate UL weights
     ul_weight = torch.zeros((batch_size, 
                             seq_len, 
-                            vocab_size)).float().cuda()
+                            vocab_size)).float().to(logits.device)
 
     # Create entity mask if we are excluding entities
     if exclude_entities:
@@ -117,11 +120,11 @@ def unlikelihood_loss(
         logits_indices = torch.argmax(logits, dim=-1)
         logits_indices_mask = torch.nn.functional.one_hot(
             logits_indices, num_classes=vocab_size
-        )  # (N,s,v)
+        ).to(logits.device)
     else:
         logits_indices_mask = torch.ones(
             batch_size, seq_len, vocab_size
-        )
+        ).to(logits.device)
 
     # Readability Penalty
     # Applying this penalizes ONLY the generated words by their complexity
@@ -132,7 +135,7 @@ def unlikelihood_loss(
             .unsqueeze(0)
             .expand(batch_size, seq_len, vocab_size)
             .clone()
-        )
+        ).to(logits.device)
 
         if exclude_entities:
             # Find tokens which are NOT entities and keep the UL penalty on those
@@ -142,17 +145,11 @@ def unlikelihood_loss(
             ul_weight += lambda_read * read_mask * logits_indices_mask
 
     # Hallucination Penalty
-    hallucination_penalty = []
-    if use_input_ents_to_check_hallucination:
-        hallucination_penalty.append("inputs")
-    if use_label_ents_to_check_hallucination:
-        hallucination_penalty.append("labels")
-
-    if hallucination_penalty:
+    if use_input_ents_to_check_hallucination or use_label_ents_to_check_hallucination:
         hall_mask = (
             torch.zeros((batch_size, seq_len, vocab_size)).float().cuda()
         )
-        if "labels" in hallucination_penalty:
+        if use_label_ents_to_check_hallucination:
             # This is a penalty on words which are not in the labels
             # This reduces hallucination
             labels_indices_mask = torch.nn.functional.one_hot(
@@ -163,7 +160,7 @@ def unlikelihood_loss(
                 .unsqueeze(1)
                 .expand(batch_size, seq_len, vocab_size)
             )
-        if "inputs" in hallucination_penalty:
+        if use_input_ents_to_check_hallucination:
             inputs_indices_mask = torch.nn.functional.one_hot(
                 inputs["input_ids"], num_classes=vocab_size
             )
@@ -187,5 +184,5 @@ def unlikelihood_loss(
     )
 
     # Add in the UL loss to the orig loss
-    loss = nll_loss.mean(axis=-1) + ul_loss
-    return loss
+    loss = nll_loss + ul_loss
+    return loss.mean()
