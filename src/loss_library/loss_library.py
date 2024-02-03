@@ -1,6 +1,7 @@
 import spacy
 import scispacy
 import pickle
+import torch
 
 # from scispacy.linking import EntityLinker
 from loss_library.utils_loss_truncation_loss import loss_truncation_loss, LossDropper
@@ -51,8 +52,8 @@ class LossLibrary:
         if loss_type == "ul":
             # Import the weights
             with open(ul_weights_path, "rb") as f:
-                ul_weights = pickle.load(f)
-            ul_weights = list(map(lambda x: max(x, 0.0), ul_weights))
+                ul_weights = torch.tensor(pickle.load(f))
+            ul_weights[ul_weights < 0] = 0
             self.ul_weights = ul_weights
             self.ul_lambda_read  = ul_lambda_read
             self.ul_lambda_const = ul_lambda_const
